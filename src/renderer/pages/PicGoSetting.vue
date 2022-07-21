@@ -426,8 +426,6 @@ export default class extends Vue {
 
   created () {
     this.os = process.platform
-    ipcRenderer.send('getPicBeds')
-    ipcRenderer.on('getPicBeds', this.getPicBeds)
     this.initData()
   }
 
@@ -468,16 +466,6 @@ export default class extends Vue {
       }
     }
     return logLevel
-  }
-
-  getPicBeds (event: Event, picBeds: IPicBedType[]) {
-    this.picBed = picBeds
-    this.form.showPicBedList = this.picBed.map(item => {
-      if (item.visible) {
-        return item.name
-      }
-      return null
-    }).filter(item => item) as string[]
   }
 
   openFile (file: string) {
@@ -550,7 +538,6 @@ export default class extends Vue {
     this.saveConfig({
       'picBed.list': list
     })
-    ipcRenderer.send('getPicBeds')
   }
 
   handleAutoStartChange (val: boolean) {
@@ -716,7 +703,6 @@ export default class extends Vue {
   }
 
   beforeDestroy () {
-    ipcRenderer.removeListener('getPicBeds', this.getPicBeds)
   }
 }
 </script>

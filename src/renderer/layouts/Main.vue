@@ -17,7 +17,6 @@
           :default-active="defaultActive"
           @select="handleSelect"
           :unique-opened="true"
-          @open="handleGetPicPeds"
           >
           <el-menu-item index="upload">
             <i class="el-icon-upload"></i>
@@ -27,26 +26,6 @@
             <i class="el-icon-picture"></i>
             <span slot="title">相册</span>
           </el-menu-item>
-          <el-submenu
-            index="sub-menu"
-          >
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>图床设置</span>
-            </template>
-            <template
-              v-for="item in picBed"
-            >
-              <el-menu-item
-                v-if="item.visible"
-                :index="`picbeds-${item.type}`"
-                :key="item.type"
-              >
-                <!-- <i :class="`el-icon-ui-${item.type}`"></i> -->
-                <span slot="title">{{ item.name }}</span>
-              </el-menu-item>
-            </template>
-          </el-submenu>
           <el-menu-item index="setting">
             <i class="el-icon-setting"></i>
             <span slot="title">PicGo设置</span>
@@ -150,7 +129,6 @@ import pick from 'lodash/pick'
 import pkg from 'root/package.json'
 import {
   ipcRenderer,
-  IpcRendererEvent,
   clipboard
 } from 'electron'
 import mixin from '@/utils/mixin'
@@ -172,18 +150,12 @@ export default class extends Vue {
   version = process.env.NODE_ENV === 'production' ? pkg.version : 'Dev'
   defaultActive = 'upload'
   visible = false
-  keyBindingVisible = false
-  customLinkVisible = false
   os = ''
-  picBed: IPicBedType[] = []
   qrcodeVisible = false
   picBedConfigString = ''
   choosedPicBedForQRCode: string[] = []
   created () {
     this.os = process.platform
-    ipcRenderer.send('getPicBeds')
-    ipcRenderer.on('getPicBeds', this.getPicBeds)
-    this.handleGetPicPeds()
   }
 
   @Watch('choosedPicBedForQRCode')
@@ -195,10 +167,6 @@ export default class extends Vue {
         this.picBedConfigString = JSON.stringify(config)
       })
     }
-  }
-
-  handleGetPicPeds = () => {
-    ipcRenderer.send('getPicBeds')
   }
 
   handleSelect (index: string) {
@@ -245,18 +213,7 @@ export default class extends Vue {
     this.$message.success('图床配置复制成功')
   }
 
-  getPicBeds (event: IpcRendererEvent, picBeds: IPicBedType[]) {
-    this.picBed = picBeds
-  }
-
-  beforeRouteEnter (to: any, next: any) {
-    next((vm: this) => {
-      vm.defaultActive = to.name
-    })
-  }
-
   beforeDestroy () {
-    ipcRenderer.removeListener('getPicBeds', this.getPicBeds)
   }
 }
 </script>

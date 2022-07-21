@@ -93,9 +93,6 @@ export default class extends Vue {
     })
     this.getPasteStyle()
     this.getDefaultPicBed()
-    ipcRenderer.on('syncPicBed', () => {
-      this.getDefaultPicBed()
-    })
     ipcRenderer.send('getPicBeds')
     ipcRenderer.on('getPicBeds', this.getPicBeds)
     this.$bus.$on(SHOW_INPUT_BOX_RESPONSE, this.handleInputBoxValue)
@@ -117,7 +114,6 @@ export default class extends Vue {
   beforeDestroy () {
     this.$bus.$off(SHOW_INPUT_BOX_RESPONSE)
     ipcRenderer.removeAllListeners('uploadProgress')
-    ipcRenderer.removeAllListeners('syncPicBed')
     ipcRenderer.removeListener('getPicBeds', this.getPicBeds)
   }
 

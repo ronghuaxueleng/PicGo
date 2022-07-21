@@ -202,7 +202,6 @@ export default class extends Vue {
           item.ing = false
           item.hasInstall = true
         }
-        this.getPicBeds()
       })
       this.handleReload()
       this.getPluginList()
@@ -217,7 +216,6 @@ export default class extends Vue {
           if (item.config.uploader.name) {
             this.handleRestoreState('uploader', item.config.uploader.name)
           }
-          this.getPicBeds()
         }
         return item.fullName !== plugin
       })
@@ -241,7 +239,6 @@ export default class extends Vue {
       const plugin = this.pluginList.find(item => item.fullName === fullName)
       if (plugin) {
         plugin.enabled = enabled
-        this.getPicBeds()
         this.needReload = true
       }
     })
@@ -256,10 +253,6 @@ export default class extends Vue {
 
   getPluginList () {
     ipcRenderer.send('getPluginList')
-  }
-
-  getPicBeds () {
-    ipcRenderer.send('getPicBeds')
   }
 
   installPlugin (item: IPicGoPlugin) {

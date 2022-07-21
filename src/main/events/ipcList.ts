@@ -12,7 +12,6 @@ import uploader from 'apis/app/uploader'
 import pasteTemplate from '~/main/utils/pasteTemplate'
 import db, { GalleryDB } from '~/main/apis/core/datastore'
 import server from '~/main/server'
-import getPicBeds from '~/main/utils/getPicBeds'
 import shortKeyHandler from 'apis/app/shortKey/shortKeyHandler'
 import bus from '@core/bus'
 import {
@@ -22,7 +21,6 @@ import {
   MINIMIZE_WINDOW,
   CLOSE_WINDOW,
   SHOW_MAIN_PAGE_MENU,
-  SHOW_UPLOAD_PAGE_MENU,
   OPEN_USER_STORE_FILE,
   OPEN_URL,
   RELOAD_APP,
@@ -35,7 +33,7 @@ import {
 } from '~/main/apis/app/uploader/apis'
 import picgoCoreIPC from './picgoCoreIPC'
 import { handleCopyUrl } from '~/main/utils/common'
-import { buildMainPageMenu, buildMiniPageMenu, buildPluginPageMenu, buildUploadPageMenu } from './remotes/menu'
+import { buildMainPageMenu, buildMiniPageMenu, buildPluginPageMenu } from './remotes/menu'
 import path from 'path'
 
 const STORE_PATH = app.getPath('userData')
@@ -145,12 +143,6 @@ export default {
       }
     })
 
-    ipcMain.on('getPicBeds', (evt: IpcMainEvent) => {
-      const picBeds = getPicBeds()
-      evt.sender.send('getPicBeds', picBeds)
-      evt.returnValue = picBeds
-    })
-
     ipcMain.on(TOGGLE_SHORTKEY_MODIFIED_MODE, (evt: IpcMainEvent, val: boolean) => {
       bus.emit(TOGGLE_SHORTKEY_MODIFIED_MODE, val)
     })
@@ -172,13 +164,6 @@ export default {
     ipcMain.on(SHOW_MAIN_PAGE_MENU, () => {
       const window = windowManager.get(IWindowList.SETTING_WINDOW)!
       const menu = buildMainPageMenu()
-      menu.popup({
-        window
-      })
-    })
-    ipcMain.on(SHOW_UPLOAD_PAGE_MENU, () => {
-      const window = windowManager.get(IWindowList.SETTING_WINDOW)!
-      const menu = buildUploadPageMenu()
       menu.popup({
         window
       })

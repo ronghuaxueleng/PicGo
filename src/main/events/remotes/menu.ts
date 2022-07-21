@@ -1,7 +1,6 @@
 import windowManager from 'apis/app/window/windowManager'
 import { IWindowList } from '#/types/enum'
 import { Menu, BrowserWindow, dialog } from 'electron'
-import getPicBeds from '~/main/utils/getPicBeds'
 import picgo from '@core/picgo'
 import {
   uploadClipboardFiles
@@ -18,24 +17,6 @@ interface GuiMenuItem {
 }
 
 const buildMiniPageMenu = () => {
-  const picBeds = getPicBeds()
-  const current = picgo.getConfig('picBed.uploader')
-  const submenu = picBeds.filter(item => item.visible).map(item => {
-    return {
-      label: item.name,
-      type: 'radio',
-      checked: current === item.type,
-      click () {
-        picgo.saveConfig({
-          'picBed.current': item.type,
-          'picBed.uploader': item.type
-        })
-        if (windowManager.has(IWindowList.SETTING_WINDOW)) {
-          windowManager.get(IWindowList.SETTING_WINDOW)!.webContents.send('syncPicBed')
-        }
-      }
-    }
-  })
   const template = [
     {
       label: '打开详细窗口',
@@ -45,11 +26,6 @@ const buildMiniPageMenu = () => {
           windowManager.get(IWindowList.MINI_WINDOW)!.hide()
         }
       }
-    },
-    {
-      label: '选择默认图床',
-      type: 'submenu',
-      submenu
     },
     {
       label: '剪贴板图片上传',
@@ -88,31 +64,6 @@ const buildMainPageMenu = () => {
   // @ts-ignore
   return Menu.buildFromTemplate(template)
 }
-
-const buildUploadPageMenu = () => {
-  const picBeds = getPicBeds()
-  const currentPicBed = picgo.getConfig('picBed.uploader')
-  const submenu = picBeds.filter(item => item.visible).map(item => {
-    return {
-      label: item.name,
-      type: 'radio',
-      checked: currentPicBed === item.type,
-      click () {
-        picgo.saveConfig({
-          'picBed.current': item.type,
-          'picBed.uploader': item.type
-        })
-        if (windowManager.has(IWindowList.SETTING_WINDOW)) {
-          windowManager.get(IWindowList.SETTING_WINDOW)!.webContents.send('syncPicBed')
-        }
-      }
-    }
-  })
-  // @ts-ignore
-  return Menu.buildFromTemplate(submenu)
-}
-
-// TODO: separate to single file
 
 const handleRestoreState = (item: string, name: string): void => {
   if (item === 'uploader') {
@@ -248,6 +199,5 @@ const buildPluginPageMenu = (plugin: IPicGoPlugin) => {
 export {
   buildMiniPageMenu,
   buildMainPageMenu,
-  buildUploadPageMenu,
   buildPluginPageMenu
 }
