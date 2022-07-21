@@ -1,10 +1,7 @@
 import windowManager from 'apis/app/window/windowManager'
 import { IWindowList } from '#/types/enum'
-import { Menu, BrowserWindow, dialog } from 'electron'
+import { Menu, dialog } from 'electron'
 import picgo from '@core/picgo'
-import {
-  uploadClipboardFiles
-} from '~/main/apis/app/uploader/apis'
 import pkg from 'root/package.json'
 import GuiApi from 'apis/gui'
 import { PICGO_CONFIG_PLUGIN, PICGO_HANDLE_PLUGIN_ING, PICGO_TOGGLE_PLUGIN } from '~/universal/events/constants'
@@ -14,38 +11,6 @@ import { PicGo as PicGoCore } from 'picgo'
 interface GuiMenuItem {
   label: string
   handle: (arg0: PicGoCore, arg1: GuiApi) => Promise<void>
-}
-
-const buildMiniPageMenu = () => {
-  const template = [
-    {
-      label: '打开详细窗口',
-      click () {
-        windowManager.get(IWindowList.SETTING_WINDOW)!.show()
-        if (windowManager.has(IWindowList.MINI_WINDOW)) {
-          windowManager.get(IWindowList.MINI_WINDOW)!.hide()
-        }
-      }
-    },
-    {
-      label: '剪贴板图片上传',
-      click () {
-        uploadClipboardFiles()
-      }
-    },
-    {
-      label: '隐藏窗口',
-      click () {
-        BrowserWindow.getFocusedWindow()!.hide()
-      }
-    },
-    {
-      role: 'quit',
-      label: '退出'
-    }
-  ]
-  // @ts-ignore
-  return Menu.buildFromTemplate(template)
 }
 
 const buildMainPageMenu = () => {
@@ -66,15 +31,6 @@ const buildMainPageMenu = () => {
 }
 
 const handleRestoreState = (item: string, name: string): void => {
-  if (item === 'uploader') {
-    const current = picgo.getConfig('picBed.current')
-    if (current === name) {
-      picgo.saveConfig({
-        'picBed.current': 'smms',
-        'picBed.uploader': 'smms'
-      })
-    }
-  }
   if (item === 'transformer') {
     const current = picgo.getConfig('picBed.transformer')
     if (current === name) {
@@ -108,9 +64,6 @@ const buildPluginPageMenu = (plugin: IPicGoPlugin) => {
       window.webContents.send(PICGO_TOGGLE_PLUGIN, plugin.fullName, false)
       if (plugin.config.transformer.name) {
         handleRestoreState('transformer', plugin.config.transformer.name)
-      }
-      if (plugin.config.uploader.name) {
-        handleRestoreState('uploader', plugin.config.uploader.name)
       }
     }
   }, {
@@ -197,7 +150,6 @@ const buildPluginPageMenu = (plugin: IPicGoPlugin) => {
 }
 
 export {
-  buildMiniPageMenu,
   buildMainPageMenu,
   buildPluginPageMenu
 }

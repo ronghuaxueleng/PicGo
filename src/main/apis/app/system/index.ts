@@ -3,17 +3,12 @@ import {
   Menu,
   Tray,
   dialog,
-  clipboard,
-  systemPreferences,
-  Notification
+  clipboard
 } from 'electron'
-import uploader from 'apis/app/uploader'
-import db, { GalleryDB } from '~/main/apis/core/datastore'
+import db from '~/main/apis/core/datastore'
 import windowManager from 'apis/app/window/windowManager'
 import { IWindowList } from '#/types/enum'
-import pasteTemplate from '~/main/utils/pasteTemplate'
 import pkg from 'root/package.json'
-import { handleCopyUrl } from '~/main/utils/common'
 let contextMenu: Menu | null
 let menu: Menu | null
 let tray: Tray | null
@@ -36,9 +31,6 @@ export function createContextMenu () {
           const settingWindow = windowManager.get(IWindowList.SETTING_WINDOW)
           settingWindow!.show()
           settingWindow!.focus()
-          if (windowManager.has(IWindowList.MINI_WINDOW)) {
-            windowManager.get(IWindowList.MINI_WINDOW)!.hide()
-          }
         }
       },
       // @ts-ignore
@@ -62,9 +54,6 @@ export function createContextMenu () {
           const settingWindow = windowManager.get(IWindowList.SETTING_WINDOW)
           settingWindow!.show()
           settingWindow!.focus()
-          if (windowManager.has(IWindowList.MINI_WINDOW)) {
-            windowManager.get(IWindowList.MINI_WINDOW)!.hide()
-          }
         }
       },
       // @ts-ignore
@@ -134,51 +123,8 @@ export function createTray () {
         const settingWindow = windowManager.get(IWindowList.SETTING_WINDOW)
         settingWindow!.show()
         settingWindow!.focus()
-        if (windowManager.has(IWindowList.MINI_WINDOW)) {
-          windowManager.get(IWindowList.MINI_WINDOW)!.hide()
-        }
       }
     })
-
-    tray.on('drag-enter', () => {
-      if (systemPreferences.isDarkMode()) {
-        tray!.setImage(`${__static}/upload-dark.png`)
-      } else {
-        tray!.setImage(`${__static}/upload.png`)
-      }
-    })
-
-    tray.on('drag-end', () => {
-      tray!.setImage(`${__static}/menubar.png`)
-    })
-
-    // drop-files only be supported in macOS
-    // so the tray window must be available
-    tray.on('drop-files', async (event: Event, files: string[]) => {
-      const pasteStyle = db.get('settings.pasteStyle') || 'markdown'
-      const trayWindow = windowManager.get(IWindowList.TRAY_WINDOW)!
-      const imgs = await uploader
-        .setWebContents(trayWindow.webContents)
-        .upload(files)
-      if (imgs !== false) {
-        const pasteText: string[] = []
-        for (let i = 0; i < imgs.length; i++) {
-          pasteText.push(pasteTemplate(pasteStyle, imgs[i], db.get('settings.customLink')))
-          const notification = new Notification({
-            title: '上传成功',
-            body: imgs[i].imgUrl!,
-            icon: files[i]
-          })
-          setTimeout(() => {
-            notification.show()
-          }, i * 100)
-          await GalleryDB.getInstance().insert(imgs[i])
-        }
-        handleCopyUrl(pasteText.join('\n'))
-        trayWindow.webContents.send('dragFiles', imgs)
-      }
-    })
-    // toggleWindow()
   } else if (process.platform === 'linux') {
   // click事件在Ubuntu上无法触发，Unity不支持（在Mac和Windows上可以触发）
   // 需要使用 setContextMenu 设置菜单

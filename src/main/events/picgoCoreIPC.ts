@@ -104,10 +104,6 @@ const getPluginList = (): IPicGoPlugin[] => {
           name: handleStreamlinePluginName(pluginList[i]),
           config: plugin.config ? handleConfigWithFunction(plugin.config(picgo)) : []
         },
-        uploader: {
-          name: uploaderName,
-          config: handleConfigWithFunction(getConfig(uploaderName, IPicGoHelperType.uploader, picgo))
-        },
         transformer: {
           name: transformerName,
           config: handleConfigWithFunction(getConfig(uploaderName, IPicGoHelperType.transformer, picgo))

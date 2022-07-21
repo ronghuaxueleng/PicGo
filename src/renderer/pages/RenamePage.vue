@@ -24,14 +24,12 @@
 <script lang="ts">
 import { RENAME_FILE_NAME } from '#/events/constants'
 import { Component, Vue } from 'vue-property-decorator'
-import mixin from '@/utils/mixin'
 import {
   ipcRenderer,
   IpcRendererEvent
 } from 'electron'
 @Component({
-  name: 'rename-page',
-  mixins: [mixin]
+  name: 'rename-page'
 })
 export default class extends Vue {
   fileName: string = ''

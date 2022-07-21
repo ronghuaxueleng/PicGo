@@ -75,10 +75,6 @@ interface IShortKeyConfigs {
   [propName: string]: IShortKeyConfig
 }
 
-interface IOldShortKeyConfigs {
-  upload: string
-}
-
 interface IKeyCommandType {
   key: string,
   command: string
@@ -133,7 +129,6 @@ interface IPicGoPlugin {
   gui: boolean
   config: {
     plugin: IPluginMenuConfig
-    uploader: IPluginMenuConfig
     transformer: IPluginMenuConfig
     [index: string]: IPluginMenuConfig
   } | {
@@ -189,7 +184,6 @@ type IDispose = () => void
 interface IGuiApi {
   showInputBox: (options: IShowInputBoxOption) => Promise<string>
   showFileExplorer: (options: IShowFileExplorerOption) => Promise<string>
-  upload: (input: IUploadOption) => Promise<ImgInfo[]>
   showNotification: (options?: IShowNotificationOption) => void
   showMessageBox: (options?: IShowMessageBoxOption) => Promise<IShowMessageBoxResult>
 }
@@ -200,9 +194,6 @@ interface IShowInputBoxOption {
 }
 
 type IShowFileExplorerOption = IObj
-
-type IUploadOption = string[]
-
 interface IShowNotificationOption {
   title: string
   body: string

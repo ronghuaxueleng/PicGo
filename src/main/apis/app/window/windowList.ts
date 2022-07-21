@@ -75,7 +75,7 @@ windowList.set(IWindowList.SETTING_WINDOW, {
     }
     return options
   },
-  callback (window, windowManager) {
+  callback (window) {
     window.loadURL(SETTING_WINDOW_URL)
     window.on('closed', () => {
       bus.emit(TOGGLE_SHORTKEY_MODIFIED_MODE, false)
@@ -86,39 +86,6 @@ windowList.set(IWindowList.SETTING_WINDOW, {
       }
     })
     bus.emit(CREATE_APP_MENU)
-    windowManager.create(IWindowList.MINI_WINDOW)
-  }
-})
-
-windowList.set(IWindowList.MINI_WINDOW, {
-  isValid: process.platform !== 'darwin',
-  multiple: false,
-  options () {
-    const obj: IBrowserWindowOptions = {
-      height: 64,
-      width: 64,
-      show: process.platform === 'linux',
-      frame: false,
-      fullscreenable: false,
-      skipTaskbar: true,
-      resizable: false,
-      transparent: process.platform !== 'linux',
-      icon: `${__static}/logo.png`,
-      webPreferences: {
-        backgroundThrottling: false,
-        nodeIntegration: !!process.env.ELECTRON_NODE_INTEGRATION,
-        contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-        nodeIntegrationInWorker: true
-      }
-    }
-
-    if (db.get('settings.miniWindowOntop')) {
-      obj.alwaysOnTop = true
-    }
-    return obj
-  },
-  callback (window) {
-    window.loadURL(MINI_WINDOW_URL)
   }
 })
 

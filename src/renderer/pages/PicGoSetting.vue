@@ -366,7 +366,6 @@ export default class extends Vue {
     autoStart: false,
     rename: false,
     autoRename: false,
-    uploadNotification: false,
     miniWindowOntop: false,
     logLevel: ['all'],
     autoCopyUrl: true,
@@ -438,7 +437,6 @@ export default class extends Vue {
       this.form.autoStart = settings.autoStart || false
       this.form.rename = settings.rename || false
       this.form.autoRename = settings.autoRename || false
-      this.form.uploadNotification = settings.uploadNotification || false
       this.form.miniWindowOntop = settings.miniWindowOntop || false
       this.form.logLevel = this.initLogLevel(settings.logLevel || [])
       this.form.autoCopyUrl = settings.autoCopy === undefined ? true : settings.autoCopy

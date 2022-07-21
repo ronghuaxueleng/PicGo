@@ -22,25 +22,6 @@ class ConfigStore {
 
     this.db = Datastore(adapter)
     this.db._.mixin(LodashId)
-
-    if (!this.db.has('picBed').value()) {
-      this.db.set('picBed', {
-        current: 'smms', // deprecated
-        uploader: 'smms',
-        smms: {
-          token: ''
-        }
-      }).write()
-    }
-
-    if (!this.db.has('settings.shortKey').value()) {
-      this.db.set('settings.shortKey[picgo:upload]', {
-        enable: true,
-        key: 'CommandOrControl+Shift+P',
-        name: 'upload',
-        label: '快捷上传'
-      }).write()
-    }
   }
 
   read () {

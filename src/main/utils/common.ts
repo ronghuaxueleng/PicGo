@@ -1,11 +1,4 @@
-import db from '~/main/apis/core/datastore'
 import { clipboard, Notification, dialog } from 'electron'
-
-export const handleCopyUrl = (str: string): void => {
-  if (db.get('settings.autoCopy') !== false) {
-    clipboard.writeText(str)
-  }
-}
 
 /**
  * show notification

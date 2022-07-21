@@ -1,6 +1,4 @@
-import {
-  BrowserWindow
-} from 'electron'
+import { BrowserWindow } from 'electron'
 import windowList from './windowList'
 import { IWindowList } from '#/types/enum'
 
@@ -22,7 +20,7 @@ class WindowManager implements IWindowManager {
         this.windowMap.set(name, window)
         this.windowIdMap.set(window.id, name)
       }
-      windowConfig.callback(window, this)
+      windowConfig.callback(window)
       window.on('close', () => {
         this.deleteById(id)
       })
@@ -36,8 +34,7 @@ class WindowManager implements IWindowManager {
     if (this.has(name)) {
       return this.windowMap.get(name)!
     } else {
-      const window = this.create(name)
-      return window
+      return this.create(name)
     }
   }
 
@@ -45,14 +42,6 @@ class WindowManager implements IWindowManager {
     return this.windowMap.has(name)
   }
 
-  // useless
-  // delete (name: IWindowList) {
-  //   const window = this.windowMap.get(name)
-  //   if (window) {
-  //     this.windowIdMap.delete(window.id)
-  //     this.windowMap.delete(name)
-  //   }
-  // }
   deleteById = (id: number) => {
     const name = this.windowIdMap.get(id)
     if (name) {
@@ -62,14 +51,9 @@ class WindowManager implements IWindowManager {
   }
 
   getAvailableWindow () {
-    const miniWindow = this.windowMap.get(IWindowList.MINI_WINDOW)
-    if (miniWindow && miniWindow.isVisible()) {
-      return miniWindow
-    } else {
-      const settingWindow = this.windowMap.get(IWindowList.SETTING_WINDOW)
-      const trayWindow = this.windowMap.get(IWindowList.TRAY_WINDOW)
-      return settingWindow || trayWindow || this.create(IWindowList.SETTING_WINDOW)!
-    }
+    const settingWindow = this.windowMap.get(IWindowList.SETTING_WINDOW)
+    const trayWindow = this.windowMap.get(IWindowList.TRAY_WINDOW)
+    return settingWindow || trayWindow || this.create(IWindowList.SETTING_WINDOW)!
   }
 }
 

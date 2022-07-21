@@ -4,11 +4,8 @@ import {
   Notification,
   ipcMain
 } from 'electron'
-import db, { GalleryDB } from 'apis/core/datastore'
+import { GalleryDB } from 'apis/core/datastore'
 import { dbPathChecker, defaultConfigPath, getGalleryDBPath } from 'apis/core/datastore/dbChecker'
-import uploader from 'apis/app/uploader'
-import pasteTemplate from '~/main/utils/pasteTemplate'
-import { handleCopyUrl } from '~/main/utils/common'
 import {
   getWindowId,
   getSettingWindowId
@@ -18,7 +15,6 @@ import {
 } from '~/universal/events/constants'
 import { DBStore } from '@picgo/store'
 
-// Cross-process support may be required in the future
 class GuiApi implements IGuiApi {
   private static instance: GuiApi
   private windowId: number = -1
@@ -69,33 +65,6 @@ class GuiApi implements IGuiApi {
     this.windowId = await getWindowId()
     const res = await dialog.showOpenDialog(BrowserWindow.fromId(this.windowId)!, options)
     return res.filePaths?.[0]
-  }
-
-  async upload (input: IUploadOption) {
-    this.windowId = await getWindowId()
-    const webContents = this.getWebcontentsByWindowId(this.windowId)
-    const imgs = await uploader.setWebContents(webContents!).upload(input)
-    if (imgs !== false) {
-      const pasteStyle = db.get('settings.pasteStyle') || 'markdown'
-      const pasteText: string[] = []
-      for (let i = 0; i < imgs.length; i++) {
-        pasteText.push(pasteTemplate(pasteStyle, imgs[i], db.get('settings.customLink')))
-        const notification = new Notification({
-          title: '上传成功',
-          body: imgs[i].imgUrl as string,
-          icon: imgs[i].imgUrl
-        })
-        setTimeout(() => {
-          notification.show()
-        }, i * 100)
-        await GalleryDB.getInstance().insert(imgs[i])
-      }
-      handleCopyUrl(pasteText.join('\n'))
-      webContents?.send('uploadFiles', imgs)
-      webContents?.send('updateGallery')
-      return imgs
-    }
-    return []
   }
 
   showNotification (options: IShowNotificationOption = {

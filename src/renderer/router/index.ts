@@ -17,27 +17,14 @@ export default new Router({
       component: () => import(/* webpackChunkName: "RenamePage" */ '@/pages/RenamePage.vue')
     },
     {
-      path: '/mini-page',
-      name: 'mini-page',
-      component: () => import(/* webpackChunkName: "MiniPage" */ '@/pages/MiniPage.vue')
-    },
-    {
       path: '/main-page',
       name: 'main-page',
       component: () => import(/* webpackChunkName: "SettingPage" */ '@/layouts/Main.vue'),
       children: [
         {
-          path: 'upload',
-          component: () => import(/* webpackChunkName: "Upload" */ '@/pages/Upload.vue'),
-          name: 'upload'
-        },
-        {
           path: 'gallery',
           component: () => import(/* webpackChunkName: "Gallery" */ '@/pages/Gallery.vue'),
-          name: 'gallery',
-          meta: {
-            keepAlive: true
-          }
+          name: 'gallery'
         },
         {
           path: 'setting',

@@ -4,29 +4,9 @@ import path from 'path'
 import fse from 'fs-extra'
 import { PicGo as PicGoCore } from 'picgo'
 // from v2.1.2
-const updateShortKeyFromVersion212 = (db: typeof ConfigStore, shortKeyConfig: IShortKeyConfigs | IOldShortKeyConfigs) => {
+const updateShortKeyFromVersion212 = (db: typeof ConfigStore, shortKeyConfig: IShortKeyConfigs) => {
   // #557 极端情况可能会出现配置不存在，需要重新写入
   if (shortKeyConfig === undefined) {
-    const defaultShortKeyConfig = {
-      enable: true,
-      key: 'CommandOrControl+Shift+P',
-      name: 'upload',
-      label: '快捷上传'
-    }
-    db.set('settings.shortKey[picgo:upload]', defaultShortKeyConfig)
-    return true
-  }
-  if (shortKeyConfig.upload) {
-    // @ts-ignore
-    shortKeyConfig['picgo:upload'] = {
-      enable: true,
-      key: shortKeyConfig.upload,
-      name: 'upload',
-      label: '快捷上传'
-    }
-    // @ts-ignore
-    delete shortKeyConfig.upload
-    db.set('settings.shortKey', shortKeyConfig)
     return true
   }
   return false
@@ -42,9 +22,6 @@ const migrateGalleryFromVersion230 = async (configDB: typeof ConfigStore, galler
       fse.copyFileSync(configPath, configBakPath)
     }
     await galleryDB.insertMany(originGallery)
-    picgo.saveConfig({
-      uploaded: []
-    })
   }
 }
 

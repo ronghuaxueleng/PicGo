@@ -27,14 +27,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import mixin from '@/utils/mixin'
 import { ipcRenderer } from 'electron'
 import { IResult } from '@picgo/store/dist/types'
 import { PASTE_TEXT } from '#/events/constants'
 
 @Component({
-  name: 'tray-page',
-  mixins: [mixin]
+  name: 'tray-page'
 })
 export default class extends Vue {
   files: IResult<ImgInfo>[] = []

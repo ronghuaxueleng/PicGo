@@ -103,9 +103,6 @@ export default class extends Vue {
       case 'plugin': {
         return this.id
       }
-      case 'uploader': {
-        return `picBed.${this.id}`
-      }
       case 'transformer': {
         return `transformer.${this.id}`
       }

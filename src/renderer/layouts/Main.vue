@@ -5,8 +5,6 @@
         NvwaPrint - {{ version }}
       </div>
       <div class="handle-bar" v-if="os !== 'darwin'">
-        <i class="el-icon-minus" @click="minimizeWindow"></i>
-        <i class="el-icon-circle-plus-outline" @click="openMiniWindow"></i>
         <i class="el-icon-close" @click="closeWindow"></i>
       </div>
     </div>
@@ -18,10 +16,6 @@
           @select="handleSelect"
           :unique-opened="true"
           >
-          <el-menu-item index="upload">
-            <i class="el-icon-upload"></i>
-            <span slot="title">上传区</span>
-          </el-menu-item>
           <el-menu-item index="gallery">
             <i class="el-icon-picture"></i>
             <span slot="title">相册</span>
@@ -57,49 +51,30 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
-import QrcodeVue from 'qrcode.vue'
-import pick from 'lodash/pick'
+import { Component, Vue } from 'vue-property-decorator'
 import pkg from 'root/package.json'
 import {
-  ipcRenderer,
-  clipboard
+  ipcRenderer
 } from 'electron'
-import mixin from '@/utils/mixin'
 import InputBoxDialog from '@/components/InputBoxDialog.vue'
 import {
-  MINIMIZE_WINDOW,
   CLOSE_WINDOW,
   SHOW_MAIN_PAGE_MENU
 } from '~/universal/events/constants'
 @Component({
   name: 'main-page',
-  mixins: [mixin],
   components: {
-    InputBoxDialog,
-    QrcodeVue
+    InputBoxDialog
   }
 })
 export default class extends Vue {
   version = pkg.version
-  defaultActive = 'upload'
+  defaultActive = 'gallery'
   visible = false
   os = ''
   picBedConfigString = ''
-  choosedPicBedForQRCode: string[] = []
   created () {
     this.os = process.platform
-  }
-
-  @Watch('choosedPicBedForQRCode')
-  choosedPicBedForQRCodeChange (val: string[]) {
-    if (val.length > 0) {
-      this.$nextTick(async () => {
-        const picBedConfig = await this.getConfig('picBed')
-        const config = pick(picBedConfig, ...this.choosedPicBedForQRCode)
-        this.picBedConfigString = JSON.stringify(config)
-      })
-    }
   }
 
   handleSelect (index: string) {
@@ -125,25 +100,12 @@ export default class extends Vue {
     }
   }
 
-  minimizeWindow () {
-    ipcRenderer.send(MINIMIZE_WINDOW)
-  }
-
   closeWindow () {
     ipcRenderer.send(CLOSE_WINDOW)
   }
 
   openDialog () {
     ipcRenderer.send(SHOW_MAIN_PAGE_MENU)
-  }
-
-  openMiniWindow () {
-    ipcRenderer.send('openMiniWindow')
-  }
-
-  handleCopyPicBedConfig () {
-    clipboard.writeText(this.picBedConfigString)
-    this.$message.success('图床配置复制成功')
   }
 
   beforeDestroy () {
@@ -166,16 +128,6 @@ $darwinBg = transparentify(#172426, #000, 0.7)
   text-align center
   margin 10px auto
 #main-page
-  .qrcode-dialog
-    .qrcode-container
-      display flex
-      justify-content center
-    .el-dialog__body
-      padding-top 10px
-    .copy-picbed-config
-      margin-left 10px
-    .el-input__inner
-      border-radius 14px
   .fake-title-bar
     -webkit-app-region drag
     height h = 22px
