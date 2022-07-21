@@ -24,7 +24,7 @@ export function createContextMenu () {
         label: '关于',
         click () {
           dialog.showMessageBox({
-            title: 'nvwaprint',
+            title: 'NvwaPrint',
             message: '女娲打印平台组件',
             detail: `Version: ${pkg.version}\nAuthor: caoqiang\nEmail: caoqiang@jiuqi.com.cn`
           })
@@ -81,7 +81,7 @@ export function createContextMenu () {
         label: '关于应用',
         click () {
           dialog.showMessageBox({
-            title: 'nvwaprint',
+            title: 'NvwaPrint',
             message: '女娲打印平台组件',
             buttons: ['Ok'],
             detail: `Version: ${pkg.version}\nAuthor: caoqiang\nEmail: caoqiang@jiuqi.com.cn`

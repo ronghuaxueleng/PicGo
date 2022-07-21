@@ -2,7 +2,7 @@
   <div id="main-page">
     <div class="fake-title-bar" :class="{ 'darwin': os === 'darwin' }">
       <div class="fake-title-bar__title">
-        PicGo - {{ version }}
+        NvwaPrint - {{ version }}
       </div>
       <div class="handle-bar" v-if="os !== 'darwin'">
         <i class="el-icon-minus" @click="minimizeWindow"></i>
@@ -53,72 +53,6 @@
         </transition>
       </el-col>
     </el-row>
-    <el-dialog
-      title="赞助PicGo"
-      :visible.sync="visible"
-      width="70%"
-      top="10vh"
-    >
-      PicGo是免费开源的软件，如果你喜欢它，对你有帮助，不妨请我喝杯咖啡？
-      <el-row class="support">
-        <el-col :span="12">
-          <img src="https://user-images.githubusercontent.com/12621342/34188165-e7cdf372-e56f-11e7-8732-1338c88b9bb7.jpg" alt="支付宝">
-          <div class="support-title">支付宝</div>
-        </el-col>
-        <el-col :span="12">
-          <img src="https://user-images.githubusercontent.com/12621342/34188201-212cda84-e570-11e7-9b7a-abb298699d85.jpg" alt="支付宝">
-          <div class="support-title">微信</div>
-        </el-col>
-      </el-row>
-    </el-dialog>
-    <el-dialog
-      class="qrcode-dialog"
-      top="3vh"
-      width="60%"
-      title="图床配置二维码"
-      :visible.sync="qrcodeVisible"
-      :modal-append-to-body="false"
-      lock-scroll
-    >
-      <el-form
-        label-position="left"
-        label-width="70px"
-        size="mini"
-      >
-        <el-form-item
-          label="选择图床"
-        >
-          <el-select
-            v-model="choosedPicBedForQRCode"
-            multiple
-            collapse-tags
-          >
-            <el-option
-              v-for="item in picBed"
-              :key="item.type"
-              :label="item.name"
-              :value="item.type"
-            ></el-option>
-          </el-select>
-          <el-button
-            v-show="choosedPicBedForQRCode.length > 0"
-            type="primary"
-            round
-            class="copy-picbed-config"
-            @click="handleCopyPicBedConfig"
-          >
-            复制图床配置
-          </el-button>
-        </el-form-item>
-      </el-form>
-      <div class="qrcode-container">
-        <qrcode-vue
-          v-show="choosedPicBedForQRCode.length > 0"
-          :size="280"
-          :value="picBedConfigString"
-        />
-      </div>
-    </el-dialog>
     <input-box-dialog />
   </div>
 </template>
@@ -147,11 +81,10 @@ import {
   }
 })
 export default class extends Vue {
-  version = process.env.NODE_ENV === 'production' ? pkg.version : 'Dev'
+  version = pkg.version
   defaultActive = 'upload'
   visible = false
   os = ''
-  qrcodeVisible = false
   picBedConfigString = ''
   choosedPicBedForQRCode: string[] = []
   created () {
