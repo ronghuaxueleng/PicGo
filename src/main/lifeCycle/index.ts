@@ -8,7 +8,6 @@ import {
 import {
   createProtocol
 } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import beforeOpen from '~/main/utils/beforeOpen'
 import ipcList from '~/main/events/ipcList'
 import busEventList from '~/main/events/busEventList'
@@ -26,7 +25,6 @@ import {
   createTray
 } from 'apis/app/system'
 import server from '~/main/server/index'
-import updateChecker from '~/main/utils/updateChecker'
 import shortKeyHandler from 'apis/app/shortKey/shortKeyHandler'
 import { getUploadFiles } from '~/main/utils/handleArgv'
 import db, { GalleryDB } from '~/main/apis/core/datastore'
@@ -72,14 +70,6 @@ class LifeCycle {
     const readyFunction = async () => {
       console.log('on ready')
       createProtocol('picgo')
-      if (isDevelopment && !process.env.IS_TEST) {
-        // Install Vue Devtools
-        try {
-          await installExtension(VUEJS_DEVTOOLS)
-        } catch (e: any) {
-          console.error('Vue Devtools failed to install:', e.toString())
-        }
-      }
       const res = await privacyManager.init()
       if (!res) {
         return app.quit()
@@ -88,7 +78,6 @@ class LifeCycle {
       windowManager.create(IWindowList.SETTING_WINDOW)
       createTray()
       db.set('needReload', false)
-      updateChecker()
       // 不需要阻塞
       process.nextTick(() => {
         shortKeyHandler.init()
