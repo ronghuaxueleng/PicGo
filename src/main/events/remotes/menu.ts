@@ -1,12 +1,11 @@
 import windowManager from 'apis/app/window/windowManager'
 import { IWindowList } from '#/types/enum'
-import { Menu, BrowserWindow, app, dialog } from 'electron'
+import { Menu, BrowserWindow, dialog } from 'electron'
 import getPicBeds from '~/main/utils/getPicBeds'
 import picgo from '@core/picgo'
 import {
   uploadClipboardFiles
 } from '~/main/apis/app/uploader/apis'
-import { privacyManager } from '~/main/utils/privacyManager'
 import pkg from 'root/package.json'
 import GuiApi from 'apis/gui'
 import { PICGO_CONFIG_PLUGIN, PICGO_HANDLE_PLUGIN_ING, PICGO_TOGGLE_PLUGIN } from '~/universal/events/constants'
@@ -65,19 +64,6 @@ const buildMiniPageMenu = () => {
       }
     },
     {
-      label: '隐私协议',
-      click () {
-        privacyManager.show(false)
-      }
-    },
-    {
-      label: '重启应用',
-      click () {
-        app.relaunch()
-        app.exit(0)
-      }
-    },
-    {
       role: 'quit',
       label: '退出'
     }
@@ -96,25 +82,6 @@ const buildMainPageMenu = () => {
           message: '女娲打印平台组件',
           detail: `Version: ${pkg.version}\nAuthor: caoqiang\nEmail: caoqiang@jiuqi.com.cn`
         })
-      }
-    },
-    {
-      label: '赞助PicGo',
-      click () {
-        // TODO: show donation
-      }
-    },
-    {
-      label: '生成图床配置二维码',
-      click () {
-        // TODO: qrcode
-        // _this.qrcodeVisible = true
-      }
-    },
-    {
-      label: '隐私协议',
-      click () {
-        privacyManager.show(false)
       }
     }
   ]

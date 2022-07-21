@@ -16,7 +16,6 @@ import picgo from '@core/picgo'
 import pasteTemplate from '~/main/utils/pasteTemplate'
 import pkg from 'root/package.json'
 import { handleCopyUrl } from '~/main/utils/common'
-import { privacyManager } from '~/main/utils/privacyManager'
 let contextMenu: Menu | null
 let menu: Menu | null
 let tray: Tray | null
@@ -66,29 +65,6 @@ export function createContextMenu () {
         type: 'submenu',
         // @ts-ignore
         submenu
-      },
-      // @ts-ignore
-      {
-        label: '打开更新助手',
-        type: 'checkbox',
-        checked: db.get('settings.showUpdateTip'),
-        click () {
-          const value = db.get('settings.showUpdateTip')
-          db.set('settings.showUpdateTip', !value)
-        }
-      },
-      {
-        label: '隐私协议',
-        click () {
-          privacyManager.show(false)
-        }
-      },
-      {
-        label: '重启应用',
-        click () {
-          app.relaunch()
-          app.exit(0)
-        }
       },
       // @ts-ignore
       {
