@@ -92,9 +92,9 @@ const buildMainPageMenu = () => {
       label: '关于',
       click () {
         dialog.showMessageBox({
-          title: 'PicGo',
-          message: 'PicGo',
-          detail: `Version: ${pkg.version}\nAuthor: Molunerfinn\nGithub: https://github.com/Molunerfinn/PicGo`
+          title: 'nvwaprint',
+          message: '女娲打印平台组件',
+          detail: `Version: ${pkg.version}\nAuthor: caoqiang\nEmail: caoqiang@jiuqi.com.cn`
         })
       }
     },
