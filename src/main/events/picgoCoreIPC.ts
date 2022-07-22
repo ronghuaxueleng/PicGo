@@ -14,7 +14,6 @@ import {
   PICGO_GET_DB,
   PICGO_INSERT_DB,
   PICGO_INSERT_MANY_DB,
-  PICGO_UPDATE_BY_ID_DB,
   PICGO_GET_BY_ID_DB,
   PICGO_REMOVE_BY_ID_DB,
   PICGO_OPEN_FILE
@@ -23,8 +22,6 @@ import {
 import { GalleryDB } from 'apis/core/datastore'
 import { IObject, IFilter } from '@picgo/store/dist/types'
 
-// eslint-disable-next-line
-const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require
 const STORE_PATH = path.dirname(dbPathChecker())
 const handleRemoveFiles = () => {
   ipcMain.on('removeFiles', (event: IpcMainEvent, files: ImgInfo[]) => {
@@ -64,12 +61,6 @@ const handlePicGoGalleryDB = () => {
     const dbStore = GalleryDB.getInstance()
     const res = await dbStore.insertMany(value)
     event.sender.send(PICGO_INSERT_MANY_DB, res, callbackId)
-  })
-
-  ipcMain.on(PICGO_UPDATE_BY_ID_DB, async (event: IpcMainEvent, id: string, value: IObject[], callbackId: string) => {
-    const dbStore = GalleryDB.getInstance()
-    const res = await dbStore.updateById(id, value)
-    event.sender.send(PICGO_UPDATE_BY_ID_DB, res, callbackId)
   })
 
   ipcMain.on(PICGO_GET_BY_ID_DB, async (event: IpcMainEvent, id: string, callbackId: string) => {

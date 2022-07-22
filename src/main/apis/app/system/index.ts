@@ -1,5 +1,4 @@
 import {
-  app,
   Menu,
   Tray,
   dialog
@@ -8,7 +7,6 @@ import windowManager from 'apis/app/window/windowManager'
 import { IWindowList } from '#/types/enum'
 import pkg from 'root/package.json'
 let contextMenu: Menu | null
-let menu: Menu | null
 let tray: Tray | null
 export function createContextMenu () {
   if (process.platform === 'darwin' || process.platform === 'win32') {
@@ -23,14 +21,6 @@ export function createContextMenu () {
           })
         }
       },
-      {
-        label: '打开详细窗口',
-        click () {
-          const settingWindow = windowManager.get(IWindowList.SETTING_WINDOW)
-          settingWindow!.show()
-          settingWindow!.focus()
-        }
-      },
       // @ts-ignore
       {
         role: 'quit',
@@ -39,14 +29,6 @@ export function createContextMenu () {
     ])
   } else if (process.platform === 'linux') {
     contextMenu = Menu.buildFromTemplate([
-      {
-        label: '打开详细窗口',
-        click () {
-          const settingWindow = windowManager.get(IWindowList.SETTING_WINDOW)
-          settingWindow!.show()
-          settingWindow!.focus()
-        }
-      },
       {
         label: '关于应用',
         click () {
@@ -99,39 +81,12 @@ export function createTray () {
   }
 }
 
-export function createMenu () {
-  if (process.env.NODE_ENV !== 'development') {
-    const template = [{
-      label: 'Edit',
-      submenu: [
-        { label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:' },
-        { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:' },
-        { type: 'separator' },
-        { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
-        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-        { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' },
-        {
-          label: 'Quit',
-          accelerator: 'CmdOrCtrl+Q',
-          click () {
-            app.quit()
-          }
-        }
-      ]
-    }]
-    // @ts-ignore
-    menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(menu)
-  }
-}
-
 const toggleWindow = (bounds: IBounds) => {
   const trayWindow = windowManager.get(IWindowList.TRAY_WINDOW)!
   if (trayWindow.isVisible()) {
     trayWindow.hide()
   } else {
     trayWindow.setPosition(bounds.x - 98 + 11, bounds.y, false)
-    trayWindow.webContents.send('updateFiles')
     trayWindow.show()
     trayWindow.focus()
   }

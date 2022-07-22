@@ -43,7 +43,6 @@
         </transition>
       </el-col>
     </el-row>
-    <input-box-dialog />
   </div>
 </template>
 <script lang="ts">
@@ -52,48 +51,26 @@ import pkg from 'root/package.json'
 import {
   ipcRenderer
 } from 'electron'
-import InputBoxDialog from '@/components/InputBoxDialog.vue'
 import {
   CLOSE_WINDOW,
   SHOW_MAIN_PAGE_MENU
 } from '~/universal/events/constants'
 @Component({
-  name: 'main-page',
-  components: {
-    InputBoxDialog
-  }
+  name: 'main-page'
 })
 export default class extends Vue {
   version = pkg.version
   defaultActive = 'gallery'
   visible = false
   os = ''
-  picBedConfigString = ''
   created () {
     this.os = process.platform
   }
 
   handleSelect (index: string) {
-    const type = index.match(/picbeds-/)
-    if (type === null) {
-      this.$router.push({
-        name: index
-      })
-    } else {
-      const picBed = index.replace(/picbeds-/, '')
-      if (this.$builtInPicBed.includes(picBed)) {
-        this.$router.push({
-          name: picBed
-        })
-      } else {
-        this.$router.push({
-          name: 'others',
-          params: {
-            type: picBed
-          }
-        })
-      }
-    }
+    this.$router.push({
+      name: index
+    })
   }
 
   closeWindow () {

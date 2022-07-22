@@ -19,7 +19,6 @@ import {
 import {
   createTray
 } from 'apis/app/system'
-import server from '~/main/server/index'
 import db, { GalleryDB } from '~/main/apis/core/datastore'
 import bus from '@core/bus'
 import picgo from 'apis/core/picgo'
@@ -47,7 +46,6 @@ class LifeCycle {
       windowManager.create(IWindowList.SETTING_WINDOW)
       createTray()
       db.set('needReload', false)
-      server.startup()
       if (global.notificationList && global.notificationList?.length > 0) {
         while (global.notificationList?.length) {
           const option = global.notificationList.pop()
@@ -73,9 +71,6 @@ class LifeCycle {
         windowManager.create(IWindowList.SETTING_WINDOW)
       }
     })
-    app.setLoginItemSettings({
-      openAtLogin: db.get('settings.autoStart') || false
-    })
     if (process.platform === 'win32') {
       app.setAppUserModelId('com.molunerfinn.picgo')
     }
@@ -95,7 +90,6 @@ class LifeCycle {
     app.on('will-quit', () => {
       globalShortcut.unregisterAll()
       bus.removeAllListeners()
-      server.shutdown()
     })
     // Exit cleanly on request from parent process in development mode.
     if (isDevelopment) {

@@ -1,15 +1,15 @@
-import { IObject, IResult, IGetResult, IFilter } from '@picgo/store/dist/types'
+import { IFilter, IGetResult, IResult } from '@picgo/store/dist/types'
 import { ipcRenderer, IpcRendererEvent } from 'electron'
 import { uuid } from 'uuidv4'
 import {
+  PICGO_GET_BY_ID_DB,
   PICGO_GET_DB,
   PICGO_INSERT_DB,
   PICGO_INSERT_MANY_DB,
-  PICGO_UPDATE_BY_ID_DB,
-  PICGO_GET_BY_ID_DB,
   PICGO_REMOVE_BY_ID_DB
 } from '#/events/constants'
 import { IGalleryDB } from '#/types/extra-vue'
+
 export class GalleryDB implements IGalleryDB {
   async get<T> (filter?: IFilter): Promise<IGetResult<T>> {
     const res = await this.msgHandler<IGetResult<T>>(PICGO_GET_DB, filter)
@@ -26,14 +26,8 @@ export class GalleryDB implements IGalleryDB {
     return res
   }
 
-  async updateById (id: string, value: IObject): Promise<boolean> {
-    const res = await this.msgHandler<boolean>(PICGO_UPDATE_BY_ID_DB, id, value)
-    return res
-  }
-
   async getById<T> (id: string): Promise<IResult<T> | undefined> {
-    const res = await this.msgHandler<IResult<T> | undefined>(PICGO_GET_BY_ID_DB, id)
-    return res
+    return await this.msgHandler<IResult<T> | undefined>(PICGO_GET_BY_ID_DB, id)
   }
 
   async removeById (id: string): Promise<void> {

@@ -1,8 +1,7 @@
 import {
   dialog,
   BrowserWindow,
-  Notification,
-  ipcMain
+  Notification
 } from 'electron'
 import { GalleryDB } from 'apis/core/datastore'
 import { dbPathChecker, defaultConfigPath, getGalleryDBPath } from 'apis/core/datastore/dbChecker'
@@ -10,9 +9,6 @@ import {
   getWindowId,
   getSettingWindowId
 } from '@core/bus/apis'
-import {
-  SHOW_INPUT_BOX
-} from '~/universal/events/constants'
 import { DBStore } from '@picgo/store'
 
 class GuiApi implements IGuiApi {
@@ -41,23 +37,6 @@ class GuiApi implements IGuiApi {
       setTimeout(() => {
         resolve()
       }, 1000) // TODO: a better way to wait page loaded.
-    })
-  }
-
-  private getWebcontentsByWindowId (id: number) {
-    return BrowserWindow.fromId(id)?.webContents
-  }
-
-  async showInputBox (options: IShowInputBoxOption = {
-    title: '',
-    placeholder: ''
-  }) {
-    await this.showSettingWindow()
-    this.getWebcontentsByWindowId(this.settingWindowId)?.send(SHOW_INPUT_BOX, options)
-    return new Promise<string>((resolve) => {
-      ipcMain.once(SHOW_INPUT_BOX, (event: Event, value: string) => {
-        resolve(value)
-      })
     })
   }
 

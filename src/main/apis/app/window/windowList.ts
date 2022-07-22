@@ -3,8 +3,6 @@ import {
   TRAY_WINDOW_URL
 } from './constants'
 import { IWindowList } from '#/types/enum'
-import bus from '@core/bus'
-import { CREATE_APP_MENU } from '@core/bus/constants'
 import { app } from 'electron'
 
 const windowList = new Map<IWindowList, IWindowListItem>()
@@ -80,7 +78,6 @@ windowList.set(IWindowList.SETTING_WINDOW, {
         })
       }
     })
-    bus.emit(CREATE_APP_MENU)
   }
 })
 

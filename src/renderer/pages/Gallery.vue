@@ -8,20 +8,6 @@
         <el-col :span="20" :offset="2">
           <el-row class="handle-bar" :gutter="16">
             <el-col :span="12">
-              <el-select
-                v-model="choosedPicBed"
-                multiple
-                collapse-tags
-                size="mini"
-                style="width: 100%"
-                placeholder="请选择显示的图床">
-                <el-option
-                  v-for="item in picBed"
-                  :key="item.type"
-                  :label="item.name"
-                  :value="item.type">
-                </el-option>
-              </el-select>
             </el-col>
           </el-row>
           <el-row class="handle-bar" :gutter="16">
@@ -116,32 +102,10 @@ export default class extends Vue {
   }
 
   choosedList: IObjT<boolean> = {}
-  choosedPicBed: string[] = []
   lastChoosed: number = -1
   isShiftKeyPress: boolean = false
   searchText = ''
   handleBarActive = false
-
-  picBed: IPicBedType[] = []
-  @Watch('$route')
-  handleRouteUpdate (to: any, from: any) {
-    console.log(to, from)
-    if (from.name === 'gallery') {
-      this.clearChoosedList()
-    }
-    if (to.name === 'gallery') {
-      this.updateGallery()
-    }
-  }
-
-  async created () {
-    ipcRenderer.on('updateGallery', () => {
-      this.$nextTick(async () => {
-        this.updateGallery()
-      })
-    })
-    this.updateGallery()
-  }
 
   mounted () {
     document.addEventListener('keydown', this.handleDetectShiftKey)
@@ -174,26 +138,7 @@ export default class extends Vue {
   }
 
   getGallery (): ImgInfo[] {
-    if (this.searchText || this.choosedPicBed.length > 0) {
-      return this.images
-        .filter(item => {
-          let isInChoosedPicBed = true
-          let isIncludesSearchText = true
-          if (this.choosedPicBed.length > 0) {
-            isInChoosedPicBed = this.choosedPicBed.some(type => type === item.type)
-          }
-          if (this.searchText) {
-            isIncludesSearchText = item.fileName?.includes(this.searchText) || false
-          }
-          return isIncludesSearchText && isInChoosedPicBed
-        })
-    } else {
-      return this.images
-    }
-  }
-
-  async updateGallery () {
-    this.images = (await this.$$db.get({ orderBy: 'desc' })).data
+    return this.images
   }
 
   @Watch('filterList')
@@ -261,7 +206,6 @@ export default class extends Vue {
       myNotification.onclick = () => {
         return true
       }
-      this.updateGallery()
     }).catch((e) => {
       console.log(e)
       return true
@@ -272,32 +216,6 @@ export default class extends Vue {
     this.imgInfo.id = item.id!
     this.imgInfo.imgUrl = item.imgUrl as string
     this.dialogVisible = true
-  }
-
-  async confirmModify () {
-    await this.$$db.updateById(this.imgInfo.id, {
-      imgUrl: this.imgInfo.imgUrl
-    })
-    const obj = {
-      title: '修改图片URL成功',
-      body: this.imgInfo.imgUrl,
-      icon: this.imgInfo.imgUrl
-    }
-    const myNotification = new Notification(obj.title, obj)
-    myNotification.onclick = () => {
-      return true
-    }
-    this.dialogVisible = false
-    this.updateGallery()
-  }
-
-  choosePicBed (type: string) {
-    const idx = this.choosedPicBed.indexOf(type)
-    if (idx !== -1) {
-      this.choosedPicBed.splice(idx, 1)
-    } else {
-      this.choosedPicBed.push(type)
-    }
   }
 
   cleanSearch () {
@@ -346,7 +264,6 @@ export default class extends Vue {
         myNotification.onclick = () => {
           return true
         }
-        this.updateGallery()
       }).catch(() => {
         return true
       })
@@ -355,10 +272,6 @@ export default class extends Vue {
 
   toggleHandleBar () {
     this.handleBarActive = !this.handleBarActive
-  }
-
-  beforeDestroy () {
-    ipcRenderer.removeAllListeners('updateGallery')
   }
 }
 </script>

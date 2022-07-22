@@ -6,33 +6,7 @@ interface IObj {
 interface IObjT<T> {
   [propName: string]: T
 }
-
-declare interface ErrnoException extends Error {
-  errno?: number | string;
-  code?: string;
-  path?: string;
-  syscall?: string;
-  stack?: string;
-}
-
 declare let __static: string
-// Server
-type routeHandler = (ctx: IServerCTX) => Promise<void>
-
-type IHttpResponse = import('http').ServerResponse
-
-interface IServerCTX {
-  response: IHttpResponse
-  [propName: string]: any
-}
-
-interface IServerConfig {
-  port: number | string
-  host: string
-  enable: boolean
-}
-
-// Image && PicBed
 interface ImgInfo {
   buffer?: Buffer
   base64Image?: string
@@ -44,12 +18,6 @@ interface ImgInfo {
   id?: string
   type?: string
   [propName: string]: any
-}
-
-interface IPicBedType {
-  type: string
-  name: string
-  visible: boolean
 }
 
 // Main process
@@ -84,20 +52,12 @@ interface IBounds {
 }
 
 // PicGo Types
-type ICtx = import('picgo').PicGo
 // GuiApi
 interface IGuiApi {
-  showInputBox: (options: IShowInputBoxOption) => Promise<string>
   showFileExplorer: (options: IShowFileExplorerOption) => Promise<string>
   showNotification: (options?: IShowNotificationOption) => void
   showMessageBox: (options?: IShowMessageBoxOption) => Promise<IShowMessageBoxResult>
 }
-interface IShowInputBoxOption {
-  value?: string
-  title: string
-  placeholder: string
-}
-
 type IShowFileExplorerOption = IObj
 interface IShowNotificationOption {
   title: string
@@ -127,12 +87,6 @@ interface IAppNotification {
   title: string
   body: string
   icon?: string
-}
-
-interface ITalkingDataOptions {
-  EventId: string
-  Label?: string
-  MapKv?: IStringKeyMap
 }
 interface IStringKeyMap {
   [propName: string]: any

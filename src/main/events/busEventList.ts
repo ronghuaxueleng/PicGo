@@ -1,21 +1,16 @@
 import bus from '@core/bus'
-import {
-  createMenu
-} from 'apis/app/system'
 import { IWindowList } from '#/types/enum'
 import windowManager from 'apis/app/window/windowManager'
 import {
   GET_WINDOW_ID,
   GET_WINDOW_ID_REPONSE,
   GET_SETTING_WINDOW_ID,
-  GET_SETTING_WINDOW_ID_RESPONSE,
-  CREATE_APP_MENU
+  GET_SETTING_WINDOW_ID_RESPONSE
 } from '@core/bus/constants'
 function initEventCenter () {
   const eventList: any = {
     [GET_WINDOW_ID]: busCallGetWindowId,
-    [GET_SETTING_WINDOW_ID]: busCallGetSettingWindowId,
-    [CREATE_APP_MENU]: createMenu
+    [GET_SETTING_WINDOW_ID]: busCallGetSettingWindowId
   }
   for (const i in eventList) {
     bus.on(i, eventList[i])

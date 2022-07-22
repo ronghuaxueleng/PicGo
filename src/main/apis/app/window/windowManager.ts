@@ -20,6 +20,7 @@ class WindowManager implements IWindowManager {
         this.windowMap.set(name, window)
         this.windowIdMap.set(window.id, name)
       }
+      // @ts-ignore
       windowConfig.callback(window)
       window.on('close', () => {
         this.deleteById(id)
