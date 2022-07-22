@@ -22,11 +22,6 @@
             <el-button type="primary" round size="mini" @click="openLogSetting">点击设置</el-button>
           </el-form-item>
           <el-form-item
-            label="修改快捷键"
-          >
-            <el-button type="primary" round size="mini" @click="goShortCutPage">点击设置</el-button>
-          </el-form-item>
-          <el-form-item
             label="自定义链接格式"
           >
             <el-button type="primary" round size="mini" @click="customLinkVisible = true">点击设置</el-button>
@@ -188,41 +183,6 @@
       :modal-append-to-body="false"
       width="70%"
     >
-      <el-form
-        label-position="right"
-        :model="customLink"
-        ref="customLink"
-        :rules="rules"
-        label-width="120px"
-      >
-        <el-form-item
-          label="上传代理"
-        >
-          <el-input
-            v-model="proxy"
-            :autofocus="true"
-            placeholder="例如：http://127.0.0.1:1080"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="插件安装代理"
-        >
-          <el-input
-            v-model="npmProxy"
-            :autofocus="true"
-            placeholder="例如：http://127.0.0.1:1080"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
-          label="插件镜像地址"
-        >
-          <el-input
-            v-model="npmRegistry"
-            :autofocus="true"
-            placeholder="例如：https://registry.npm.taobao.org/"
-          ></el-input>
-        </el-form-item>
-      </el-form>
       <span slot="footer">
         <el-button @click="cancelProxy" round>取消</el-button>
         <el-button type="primary" @click="confirmProxy" round>确定</el-button>
@@ -336,7 +296,6 @@
   </div>
 </template>
 <script lang="ts">
-import keyDetect from '@/utils/key-binding'
 import pkg from 'root/package.json'
 import { IConfig } from 'picgo'
 import { PICGO_OPEN_FILE, OPEN_URL } from '#/events/constants'
@@ -374,17 +333,12 @@ export default class extends Vue {
 
   picBed: IPicBedType[] = []
   logFileVisible = false
-  keyBindingVisible = false
   customLinkVisible = false
   checkUpdateVisible = false
   serverVisible = false
   proxyVisible = false
   customLink = {
     value: '$url'
-  }
-
-  shortKey: IShortKeyMap = {
-    upload: ''
   }
 
   proxy = ''
@@ -443,7 +397,6 @@ export default class extends Vue {
       this.form.checkBetaUpdate = settings.checkBetaUpdate === undefined ? true : settings.checkBetaUpdate
 
       this.customLink.value = settings.customLink || '$url'
-      this.shortKey.upload = settings.shortKey.upload
       this.proxy = picBed.proxy || ''
       this.npmRegistry = settings.registry || ''
       this.npmProxy = settings.proxy || ''
@@ -472,10 +425,6 @@ export default class extends Vue {
 
   openLogSetting () {
     this.logFileVisible = true
-  }
-
-  keyDetect (type: string, event: KeyboardEvent) {
-    this.shortKey[type] = keyDetect(event).join('+')
   }
 
   async cancelCustomLink () {
@@ -694,10 +643,6 @@ export default class extends Vue {
 
   goConfigPage () {
     ipcRenderer.send(OPEN_URL, 'https://picgo.github.io/PicGo-Doc/zh/guide/config.html#picgo设置')
-  }
-
-  goShortCutPage () {
-    this.$router.push('shortKey')
   }
 
   beforeDestroy () {

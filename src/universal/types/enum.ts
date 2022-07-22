@@ -6,7 +6,6 @@ export enum IChalkType {
 }
 
 export enum IPicGoHelperType {
-  beforeTransformPlugins = 'beforeTransformPlugins',
   transformer = 'transformer'
 }
 

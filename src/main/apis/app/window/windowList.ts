@@ -1,14 +1,11 @@
 import {
   SETTING_WINDOW_URL,
   TRAY_WINDOW_URL,
-  MINI_WINDOW_URL,
   RENAME_WINDOW_URL
 } from './constants'
 import { IWindowList } from '#/types/enum'
 import bus from '@core/bus'
 import { CREATE_APP_MENU } from '@core/bus/constants'
-import db from '~/main/apis/core/datastore'
-import { TOGGLE_SHORTKEY_MODIFIED_MODE } from '#/events/constants'
 import { app } from 'electron'
 
 const windowList = new Map<IWindowList, IWindowListItem>()
@@ -78,7 +75,6 @@ windowList.set(IWindowList.SETTING_WINDOW, {
   callback (window) {
     window.loadURL(SETTING_WINDOW_URL)
     window.on('closed', () => {
-      bus.emit(TOGGLE_SHORTKEY_MODIFIED_MODE, false)
       if (process.platform === 'linux') {
         process.nextTick(() => {
           app.quit()

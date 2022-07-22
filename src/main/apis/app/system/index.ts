@@ -40,13 +40,6 @@ export function createContextMenu () {
       }
     ])
   } else if (process.platform === 'linux') {
-    // TODO 图床选择功能
-    // 由于在Linux难以像在Mac和Windows上那样在点击时构造ContextMenu，
-    // 暂时取消这个选单，避免引起和设置中启用的图床不一致
-
-    // TODO 重启应用功能
-    // 目前的实现无法正常工作
-
     contextMenu = Menu.buildFromTemplate([
       {
         label: '打开详细窗口',
@@ -54,16 +47,6 @@ export function createContextMenu () {
           const settingWindow = windowManager.get(IWindowList.SETTING_WINDOW)
           settingWindow!.show()
           settingWindow!.focus()
-        }
-      },
-      // @ts-ignore
-      {
-        label: '打开更新助手',
-        type: 'checkbox',
-        checked: db.get('settings.showUpdateTip'),
-        click () {
-          const value = db.get('settings.showUpdateTip')
-          db.set('settings.showUpdateTip', !value)
         }
       },
       {

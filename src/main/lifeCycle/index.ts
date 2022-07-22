@@ -14,14 +14,12 @@ import busEventList from '~/main/events/busEventList'
 import { IWindowList } from '#/types/enum'
 import windowManager from 'apis/app/window/windowManager'
 import {
-  updateShortKeyFromVersion212,
   migrateGalleryFromVersion230
 } from '~/main/migrate'
 import {
   createTray
 } from 'apis/app/system'
 import server from '~/main/server/index'
-import shortKeyHandler from 'apis/app/shortKey/shortKeyHandler'
 import db, { GalleryDB } from '~/main/apis/core/datastore'
 import bus from '@core/bus'
 import picgo from 'apis/core/picgo'
@@ -38,7 +36,6 @@ class LifeCycle {
     beforeOpen()
     ipcList.listen()
     busEventList.listen()
-    updateShortKeyFromVersion212(db, db.get('settings.shortKey'))
     await migrateGalleryFromVersion230(db, GalleryDB.getInstance(), picgo)
   }
 
@@ -50,10 +47,6 @@ class LifeCycle {
       windowManager.create(IWindowList.SETTING_WINDOW)
       createTray()
       db.set('needReload', false)
-      // 不需要阻塞
-      process.nextTick(() => {
-        shortKeyHandler.init()
-      })
       server.startup()
       if (global.notificationList && global.notificationList?.length > 0) {
         while (global.notificationList?.length) {

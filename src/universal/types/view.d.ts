@@ -9,7 +9,3 @@ interface ISettingForm {
   autoCopyUrl: boolean
   checkBetaUpdate: boolean
 }
-
-interface IShortKeyMap {
-  [propName: string]: string
-}

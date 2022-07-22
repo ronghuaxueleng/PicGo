@@ -30,16 +30,6 @@ export default new Router({
           path: 'setting',
           component: () => import(/* webpackChunkName: "setting" */ '@/pages/PicGoSetting.vue'),
           name: 'setting'
-        },
-        {
-          path: 'plugin',
-          component: () => import(/* webpackChunkName: "Plugin" */ '@/pages/Plugin.vue'),
-          name: 'plugin'
-        },
-        {
-          path: 'shortKey',
-          component: () => import(/* webpackChunkName: "ShortkeyPage" */ '@/pages/ShortKey.vue'),
-          name: 'shortKey'
         }
       ]
     },
