@@ -11,7 +11,3 @@ export const SETTING_WINDOW_URL = isDevelopment
 export const MINI_WINDOW_URL = isDevelopment
   ? `${(process.env.WEBPACK_DEV_SERVER_URL as string)}#mini-page`
   : 'picgo://./index.html#mini-page'
-
-export const RENAME_WINDOW_URL = process.env.NODE_ENV === 'development'
-  ? `${(process.env.WEBPACK_DEV_SERVER_URL as string)}#rename-page`
-  : 'picgo://./index.html#rename-page'

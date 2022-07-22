@@ -12,11 +12,6 @@ export default new Router({
       component: () => import(/* webpackChunkName: "tray" */ '@/pages/TrayPage.vue')
     },
     {
-      path: '/rename-page',
-      name: 'rename-page',
-      component: () => import(/* webpackChunkName: "RenamePage" */ '@/pages/RenamePage.vue')
-    },
-    {
       path: '/main-page',
       name: 'main-page',
       component: () => import(/* webpackChunkName: "SettingPage" */ '@/layouts/Main.vue'),

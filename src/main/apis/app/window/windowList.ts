@@ -1,7 +1,6 @@
 import {
   SETTING_WINDOW_URL,
-  TRAY_WINDOW_URL,
-  RENAME_WINDOW_URL
+  TRAY_WINDOW_URL
 } from './constants'
 import { IWindowList } from '#/types/enum'
 import bus from '@core/bus'
@@ -82,51 +81,6 @@ windowList.set(IWindowList.SETTING_WINDOW, {
       }
     })
     bus.emit(CREATE_APP_MENU)
-  }
-})
-
-windowList.set(IWindowList.RENAME_WINDOW, {
-  isValid: true,
-  multiple: true,
-  options () {
-    const options: IBrowserWindowOptions = {
-      height: 175,
-      width: 300,
-      show: true,
-      fullscreenable: false,
-      resizable: false,
-      vibrancy: 'ultra-dark',
-      webPreferences: {
-        nodeIntegration: !!process.env.ELECTRON_NODE_INTEGRATION,
-        contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-        nodeIntegrationInWorker: true,
-        backgroundThrottling: false
-      }
-    }
-    if (process.platform !== 'darwin') {
-      options.show = true
-      options.backgroundColor = '#3f3c37'
-      options.autoHideMenuBar = true
-      options.transparent = false
-    }
-    return options
-  },
-  async callback (window, windowManager) {
-    window.loadURL(RENAME_WINDOW_URL)
-    const currentWindow = windowManager.getAvailableWindow()
-    if (currentWindow && currentWindow.isVisible()) {
-    // bounds: { x: 821, y: 75, width: 800, height: 450 }
-      const bounds = currentWindow.getBounds()
-      const positionX = bounds.x + bounds.width / 2 - 150
-      let positionY
-      // if is the settingWindow
-      if (bounds.height > 400) {
-        positionY = bounds.y + bounds.height / 2 - 88
-      } else { // if is the miniWindow
-        positionY = bounds.y + bounds.height / 2
-      }
-      window.setPosition(positionX, positionY, false)
-    }
   }
 })
 
