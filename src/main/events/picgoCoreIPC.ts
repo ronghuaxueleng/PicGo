@@ -3,10 +3,9 @@ import GuiApi from 'apis/gui'
 import {
   shell,
   IpcMainEvent,
-  ipcMain,
-  clipboard
+  ipcMain
+
 } from 'electron'
-import { IPasteStyle } from '#/types/enum'
 import picgo from '@core/picgo'
 import { dbPathChecker } from 'apis/core/datastore/dbChecker'
 import {
@@ -18,13 +17,11 @@ import {
   PICGO_UPDATE_BY_ID_DB,
   PICGO_GET_BY_ID_DB,
   PICGO_REMOVE_BY_ID_DB,
-  PICGO_OPEN_FILE,
-  PASTE_TEXT
+  PICGO_OPEN_FILE
 } from '#/events/constants'
 
 import { GalleryDB } from 'apis/core/datastore'
 import { IObject, IFilter } from '@picgo/store/dist/types'
-import pasteTemplate from '../utils/pasteTemplate'
 
 // eslint-disable-next-line
 const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require
@@ -85,16 +82,6 @@ const handlePicGoGalleryDB = () => {
     const dbStore = GalleryDB.getInstance()
     const res = await dbStore.removeById(id)
     event.sender.send(PICGO_REMOVE_BY_ID_DB, res, callbackId)
-  })
-
-  ipcMain.handle(PASTE_TEXT, async (item: ImgInfo, copy = true) => {
-    const pasteStyle = picgo.getConfig<IPasteStyle>('settings.pasteStyle') || IPasteStyle.MARKDOWN
-    const customLink = picgo.getConfig<string>('settings.customLink')
-    const txt = pasteTemplate(pasteStyle, item, customLink)
-    if (copy) {
-      clipboard.writeText(txt)
-    }
-    return txt
   })
 }
 

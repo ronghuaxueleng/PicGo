@@ -23,21 +23,6 @@
                 </el-option>
               </el-select>
             </el-col>
-            <el-col :span="12">
-              <el-select
-                v-model="pasteStyle"
-                size="mini"
-                style="width: 100%"
-                @change="handlePasteStyleChange"
-                placeholder="请选择粘贴的格式">
-                <el-option
-                  v-for="(value, key) in pasteStyleMap"
-                  :key="key"
-                  :label="key"
-                  :value="value">
-                </el-option>
-              </el-select>
-            </el-col>
           </el-row>
           <el-row class="handle-bar" :gutter="16">
             <el-col :span="12">
@@ -47,11 +32,6 @@
                 v-model="searchText">
                 <i slot="suffix" class="el-input__icon el-icon-close" v-if="searchText" @click="cleanSearch" style="cursor: pointer"></i>
               </el-input>
-            </el-col>
-            <el-col :span="4">
-              <div class="item-base copy round" :class="{ active: isMultiple(choosedList)}" @click="multiCopy">
-                复制
-              </div>
             </el-col>
             <el-col :span="4">
               <div class="item-base delete round" :class="{ active: isMultiple(choosedList)}" @click="multiRemove">
@@ -84,7 +64,6 @@
               <img v-lazy="item.imgUrl" class="gallery-list__item-img">
             </div>
             <div class="gallery-list__tool-panel">
-              <i class="el-icon-document" @click="copy(item)"></i>
               <i class="el-icon-edit-outline" @click="openDialog(item)"></i>
               <i class="el-icon-delete" @click="remove(item.id)"></i>
               <el-checkbox v-model="choosedList[item.id]" class="pull-right" @change="(val) => handleChooseImage(val, index)"></el-checkbox>
@@ -112,10 +91,8 @@
 import gallerys from 'vue-gallery'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { IResult } from '@picgo/store/dist/types'
-import { PASTE_TEXT } from '#/events/constants'
 import {
-  ipcRenderer,
-  clipboard
+  ipcRenderer
 } from 'electron'
 @Component({
   name: 'gallery',
@@ -144,14 +121,6 @@ export default class extends Vue {
   isShiftKeyPress: boolean = false
   searchText = ''
   handleBarActive = false
-  pasteStyle = ''
-  pasteStyleMap = {
-    Markdown: 'markdown',
-    HTML: 'HTML',
-    URL: 'URL',
-    UBB: 'UBB',
-    Custom: 'Custom'
-  }
 
   picBed: IPicBedType[] = []
   @Watch('$route')
@@ -275,19 +244,6 @@ export default class extends Vue {
     this.changeZIndexForGallery(false)
   }
 
-  async copy (item: ImgInfo) {
-    const copyLink = await ipcRenderer.invoke(PASTE_TEXT, item)
-    const obj = {
-      title: '复制链接成功',
-      body: copyLink,
-      icon: item.url || item.imgUrl
-    }
-    const myNotification = new Notification(obj.title, obj)
-    myNotification.onclick = () => {
-      return true
-    }
-  }
-
   remove (id: string) {
     this.$confirm('此操作将把该图片移出相册, 是否继续?', '提示', {
       confirmButtonText: '确定',
@@ -360,7 +316,6 @@ export default class extends Vue {
   }
 
   multiRemove () {
-    // choosedList -> { [id]: true or false }; true means choosed. false means not choosed.
     const multiRemoveNumber = Object.values(this.choosedList).filter(item => item).length
     if (multiRemoveNumber) {
       this.$confirm(`将在相册中移除刚才选中的 ${multiRemoveNumber} 张图片，是否继续？`, '提示', {
@@ -398,44 +353,8 @@ export default class extends Vue {
     }
   }
 
-  async multiCopy () {
-    if (Object.values(this.choosedList).some(item => item)) {
-      const copyString: string[] = []
-      // choosedList -> { [id]: true or false }; true means choosed. false means not choosed.
-      const imageIDList = Object.keys(this.choosedList)
-      for (let i = 0; i < imageIDList.length; i++) {
-        const key = imageIDList[i]
-        if (this.choosedList[key]) {
-          const item = await this.$$db.getById<ImgInfo>(key)
-          if (item) {
-            const txt = await ipcRenderer.invoke(PASTE_TEXT, item)
-            copyString.push(txt)
-            this.choosedList[key] = false
-          }
-        }
-      }
-      const obj = {
-        title: '批量复制链接成功',
-        body: copyString.join('\n')
-      }
-      const myNotification = new Notification(obj.title, obj)
-      clipboard.writeText(copyString.join('\n'))
-      myNotification.onclick = () => {
-        return true
-      }
-    }
-  }
-
   toggleHandleBar () {
     this.handleBarActive = !this.handleBarActive
-  }
-
-  // getPasteStyle () {
-  //   this.pasteStyle = this.$db.get('settings.pasteStyle') || 'markdown'
-  // }
-  async handlePasteStyleChange (val: string) {
-    this.saveConfig('settings.pasteStyle', val)
-    this.pasteStyle = val
   }
 
   beforeDestroy () {

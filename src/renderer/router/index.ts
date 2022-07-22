@@ -7,11 +7,6 @@ export default new Router({
   mode: 'hash',
   routes: [
     {
-      path: '/',
-      name: 'tray-page',
-      component: () => import(/* webpackChunkName: "tray" */ '@/pages/TrayPage.vue')
-    },
-    {
       path: '/main-page',
       name: 'main-page',
       component: () => import(/* webpackChunkName: "SettingPage" */ '@/layouts/Main.vue'),

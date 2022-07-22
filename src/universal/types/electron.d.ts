@@ -13,7 +13,6 @@ declare interface IWindowManager {
   create: (name: IWindowList) => BrowserWindow | null
   get: (name: IWindowList) => BrowserWindow | null
   has: (name: IWindowList) => boolean
-  // delete: (name: IWindowList) => void
   deleteById: (id: number) => void
   getAvailableWindow: () => BrowserWindow
 }

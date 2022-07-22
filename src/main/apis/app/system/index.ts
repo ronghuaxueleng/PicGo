@@ -2,10 +2,8 @@ import {
   app,
   Menu,
   Tray,
-  dialog,
-  clipboard
+  dialog
 } from 'electron'
-import db from '~/main/apis/core/datastore'
 import windowManager from 'apis/app/window/windowManager'
 import { IWindowList } from '#/types/enum'
 import pkg from 'root/package.json'
@@ -84,21 +82,6 @@ export function createTray () {
     tray.on('click', (event, bounds) => {
       if (process.platform === 'darwin') {
         toggleWindow(bounds)
-        setTimeout(() => {
-          const img = clipboard.readImage()
-          const obj: ImgInfo[] = []
-          if (!img.isEmpty()) {
-            // 从剪贴板来的图片默认转为png
-            // @ts-ignore
-            const imgUrl = 'data:image/png;base64,' + Buffer.from(img.toPNG(), 'binary').toString('base64')
-            obj.push({
-              width: img.getSize().width,
-              height: img.getSize().height,
-              imgUrl
-            })
-          }
-          windowManager.get(IWindowList.TRAY_WINDOW)!.webContents.send('clipboardFiles', obj)
-        }, 0)
       } else {
         if (windowManager.has(IWindowList.TRAY_WINDOW)) {
           windowManager.get(IWindowList.TRAY_WINDOW)!.hide()
@@ -126,7 +109,6 @@ export function createMenu () {
         { type: 'separator' },
         { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
         { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
         { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' },
         {
           label: 'Quit',
